@@ -39,9 +39,9 @@ class Stack:
     def is_empty(self):
         return len(self.elements) == 0
 
-    def does_coin_exist_at_position(self, coin_position_in_stack, color):
+    def does_coin_exist_at_position(self, coin_position_in_stack, coin_color):
         return (
             False
             if coin_position_in_stack > len(self.elements)
-            else self.elements[coin_position_in_stack] == color
+            else self.elements[coin_position_in_stack] == coin_color
         )

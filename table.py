@@ -51,16 +51,18 @@ class Table:
                 move.is_direction_valid(),
                 self.does_field_exist(self, move.i, move.j),
                 self.does_coin_exist_on_stack_at_position(
-                    self, move.i, move.j, move.coin_position_in_stack, move.color
+                    self, move.i, move.j, move.coin_position_in_stack, move.coin_color
                 ),
             ]
         )
 
     def does_field_exist(self, i, j):
-        return 0 <= i < self.n and 0 <= j < self.n
+        return is_field_black(i, j) if 0 <= i < self.n and 0 <= j < self.n else False
 
-    def does_coin_exist_on_stack_at_position(self, i, j, coin_position_in_stack, color):
-        return self.table[i][j].does_coin_exist_at_position(coin_position_in_stack, color)
+    def does_coin_exist_on_stack_at_position(self, i, j, coin_position_in_stack, coin_color):
+        return self.table[i][j].does_coin_exist_at_position(
+            coin_position_in_stack, coin_color
+        )
 
     def is_table_empty(self):
         for i in range(self.n):
