@@ -17,15 +17,16 @@ def map_row_index_to_coin(i):
 class Table:
     def __init__(self, n):
         self.n = n
-        self.table = np.array([[stack.WhiteField(n) for _ in range(n)] for _ in range(n)])
+        self.table = np.array(
+            [[stack.WhiteField() for _ in range(n)] for _ in range(n)]
+        )
         self.populate_table()
 
     def populate_table(self):
         for i in range(self.n):
             for j in range(self.n):
-
                 if is_field_black(i, j):
-                    self.table[i][j] = stack.Stack(self.n)
+                    self.table[i][j] = stack.Stack()
                     if is_row_in_middle(i, self.n):
                         coin = map_row_index_to_coin(i)
                         self.table[i][j].push(coin)
