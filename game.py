@@ -1,5 +1,6 @@
 import table
 import move
+from math import ceil
 
 
 class Game:
@@ -9,6 +10,9 @@ class Game:
         self.table_dimension = table_dimension
         self.game_table = table.Table(table_dimension)
         self.game_table.print_table()
+
+        self.white_stacks = 0
+        self.black_stacks = 0
 
     def get_valid_move(self):
         while True:
@@ -20,9 +24,13 @@ class Game:
             outcome = self.game_table.is_move_valid(player_move)
             if outcome:
                 return player_move
-            
+
     def is_game_over(self):
-        if self.game_table.is_table_empty():
+        if (
+            self.game_table.is_table_empty()
+            or self.white_stacks >= ceil(2 / 3 * self.table_dimension)
+            or self.black_stacks >= ceil(2 / 3 * self.table_dimension)
+        ):
             return True
 
     def play_game(self):
