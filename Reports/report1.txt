@@ -1,0 +1,9 @@
+Objasnjenja klasa:
+WhiteField - klasa koja predstavlja belo polje na tabli (polje na koje NE moze da se stane).
+U sebi sadrzi num_print_elements - broj elemenata u vrsti/koloni koji se ispisuju na polju.
+Svaka pozicija u ovom polju u ispisu predstavljena je razmakom.
+
+BlackField - klasa koja predstavlja crno polje na tabli (polje na koje MOZE da se stane).
+U sebi sadrzi niz elemenata, kapacitet i num_print_elements - broj elemenata u vrsti/koloni koji se ispisuju na polju.
+Prazne pozicije u ovom polju predstavljene su znakom ".", dok se na popunjenim pozicijama ispisuje "B" ili "W" u zavisnosti od boje novcica.
+
