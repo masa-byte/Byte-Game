@@ -13,7 +13,7 @@ class WhiteField:
         return True
 
 
-class Stack:
+class BlackField:
     def __init__(self):
         self.capacity = 8
         self.num_print_elements = 3
@@ -21,7 +21,7 @@ class Stack:
 
     def push(self, el):
         if self.capacity == len(self.elements):
-            raise IndexError("Stack is full")
+            raise IndexError("Black field is full")
         self.elements.append(el)
 
     def print_field(self):

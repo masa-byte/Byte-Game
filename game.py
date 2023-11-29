@@ -5,7 +5,6 @@ from math import ceil
 
 class Game:
     def __init__(self, human_first, table_dimension):
-        self.human_first = human_first
         self.human_first = True if human_first == "1" else False
         self.table_dimension = table_dimension
         self.game_table = table.Table(table_dimension)

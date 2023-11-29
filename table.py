@@ -26,7 +26,7 @@ class Table:
         for i in range(self.n):
             for j in range(self.n):
                 if is_field_black(i, j):
-                    self.table[i][j] = stack.Stack()
+                    self.table[i][j] = stack.BlackField()
                     if is_row_in_middle(i, self.n):
                         coin = map_row_index_to_coin(i)
                         self.table[i][j].push(coin)
