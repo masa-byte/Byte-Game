@@ -7,3 +7,23 @@ BlackField - klasa koja predstavlja crno polje na tabli (polje na koje MOZE da s
 U sebi sadrzi niz elemenata, kapacitet i num_print_elements - broj elemenata u vrsti/koloni koji se ispisuju na polju.
 Prazne pozicije u ovom polju predstavljene su znakom ".", dok se na popunjenim pozicijama ispisuje "B" ili "W" u zavisnosti od boje novcica.
 
+Move - klasa koja predstavlja potez koji igrac moze da odigra. 
+Sadrzi polje sa kog se pomera, poziciju novcica u steku i smer pomeranja.
+U sebi ima proveru za validnost smera.
+
+Table - klasa koja predstavlja tablu za igru. 
+U sebi ima dimenizju table i samu tablu kao 2d niz.
+populate_table - metoda za popunjavanje table.
+print_table - metoda za konzolni prikaz tabele.
+is_move_valid - metoda za proveru validnosti poteza, sadrzi vise razlicitih provera u sebi.
+
+Game - glavna klasa koja predstavlja igru.
+U sebi sadrzi da li je covek prvi igrac, dimenziju table i inicijalizovanu tablu, broj belih i crnih stekova trenutno.
+get_valid_move - metoda za dobijanje validnog poteza od korisnika.
+is_game_over - metoda za proveru da li je igra zavrsena.
+play_game - metoda za pokretanje igre koja za sada samo pribavlja validan potez.
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+main - funkcija iz koje se pribavlja ko igra prvi i dimenzija table, zajedno sa proverom validnosti unosa dimenzije.
+Zatim se pokrece igra.
