@@ -46,15 +46,13 @@ class Table:
             print()
 
     def is_move_valid(self, move):
-        return all(
-            [
-                move.is_direction_valid(),
-                self.does_field_exist(move.i, move.j),
-                self.does_coin_exist_on_stack_at_position(
+        if move.is_direction_valid():
+            if self.does_field_exist(move.i, move.j):
+                if self.does_coin_exist_on_stack_at_position(
                     move.i, move.j, move.coin_position_in_stack, move.coin_color
-                ),
-            ]
-        )
+                ):
+                    return True
+        return False
 
     def does_field_exist(self, i, j):
         return is_field_black(i, j) if 0 <= i < self.n and 0 <= j < self.n else False
@@ -65,10 +63,9 @@ class Table:
         )
 
     def is_table_empty(self):
-        for i in range(self.n):
-            for j in range(self.n):
-                if is_field_black(i, j):
-                    if not self.table[i][j].is_empty():
-                        return False
-
-        return True
+        return all([
+            self.table[i][j].is_empty() 
+            for i in range(self.n) 
+            for j in range(self.n) 
+            if is_field_black(i, j)
+        ])

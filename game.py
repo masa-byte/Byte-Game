@@ -17,13 +17,23 @@ class Game:
         while True:
             print("Enter i, j, coin_position_in_stack, direction")
             print("Valid directions: TL, TR, BL, BR")
-            i, j, coin_position_in_stack, direction = [
-                x for x in input("Enter move: ").split()
-            ]
-            player_move = move.Move(int(i), int(j), int(coin_position_in_stack), direction)
-            outcome = self.game_table.is_move_valid(player_move)
-            if outcome:
-                return player_move
+            splited_input = input("Enter move: ").split()
+            if len(splited_input) == 4:
+                c = 0
+                i = splited_input[c]
+                c += 1
+                j = splited_input[c]
+                c += 1
+                coin_position_in_stack = splited_input[c]
+                c += 1
+                direction = splited_input[c]
+                c += 1
+
+                if i.isnumeric() and j.isnumeric():
+                    player_move = move.Move(int(i), int(j), int(coin_position_in_stack), direction)
+                    outcome = self.game_table.is_move_valid(player_move)
+                    if outcome:
+                        return player_move
 
     def is_game_over(self):
         if (

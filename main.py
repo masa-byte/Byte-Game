@@ -3,15 +3,14 @@ import game
 
 def table_dimension_input():
     table_dimension = input("Enter the table dimension: ")
-    if table_dimension.isdigit():
+    if table_dimension.isnumeric():
         table_dimension = int(table_dimension)
         if ((table_dimension - 2) * table_dimension / 2) % 8 == 0 and table_dimension > 0:
             return table_dimension
-        else:
-            print("Please enter a positive number which follows this rule"
-                  "((table_dimension - 2) * table_dimension / 2) % 8 == 0.")
-            print("Example: 8, 10, 16")
-            return table_dimension_input()
+    print("Please enter a positive number which follows this rule"
+            "((table_dimension - 2) * table_dimension / 2) % 8 == 0.")
+    print("Example: 8, 10, 16")
+    return table_dimension_input()
         
 def player_first_input():
     human_first = input("Will human play first? (Y/N): ")

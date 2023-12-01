@@ -38,7 +38,7 @@ class BlackField:
 
     def is_empty(self):
         return len(self.elements) == 0
-
+    
     def does_coin_exist_at_position(self, coin_position_in_stack, coin_color):
         return (
             False
