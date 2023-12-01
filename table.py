@@ -49,9 +49,9 @@ class Table:
         return all(
             [
                 move.is_direction_valid(),
-                self.does_field_exist(self, move.i, move.j),
+                self.does_field_exist(move.i, move.j),
                 self.does_coin_exist_on_stack_at_position(
-                    self, move.i, move.j, move.coin_position_in_stack, move.coin_color
+                    move.i, move.j, move.coin_position_in_stack, move.coin_color
                 ),
             ]
         )

@@ -16,10 +16,11 @@ class Game:
     def get_valid_move(self):
         while True:
             print("Enter i, j, coin_position_in_stack, direction")
+            print("Valid directions: TL, TR, BL, BR")
             i, j, coin_position_in_stack, direction = [
                 x for x in input("Enter move: ").split()
             ]
-            player_move = move.Move((i, j), coin_position_in_stack, direction)
+            player_move = move.Move(int(i), int(j), int(coin_position_in_stack), direction)
             outcome = self.game_table.is_move_valid(player_move)
             if outcome:
                 return player_move

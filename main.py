@@ -9,7 +9,7 @@ def table_dimension_input():
             return table_dimension
         else:
             print("Please enter a positive number which follows this rule"
-                  "((table_dimension - 2) * table_dimension / 2) % 8 == .")
+                  "((table_dimension - 2) * table_dimension / 2) % 8 == 0.")
             print("Example: 8, 10, 16")
             return table_dimension_input()
         
