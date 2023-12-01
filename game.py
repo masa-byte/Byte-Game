@@ -1,12 +1,13 @@
 import table
 import move
-from math import ceil
+from math import floor
 
 
 class Game:
     def __init__(self, human_first, table_dimension):
         self.human_first = True if human_first == "1" else False
         self.table_dimension = table_dimension
+        self.number_of_stacks = int((self.table_dimension - 2) * self.table_dimension / 2) / 8
         self.game_table = table.Table(table_dimension)
         self.game_table.print_table()
 
@@ -38,8 +39,8 @@ class Game:
     def is_game_over(self):
         if (
             self.game_table.is_table_empty()
-            or self.white_stacks >= ceil(2 / 3 * self.table_dimension)
-            or self.black_stacks >= ceil(2 / 3 * self.table_dimension)
+            or self.white_stacks >= floor(self.number_of_stacks / 2 + 1)
+            or self.black_stacks >= floor(self.number_of_stacks / 2 + 1)
         ):
             return True
 
