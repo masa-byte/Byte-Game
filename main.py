@@ -15,14 +15,14 @@ def table_dimension_input():
 def player_first_input():
     human_first = input("Will human play first? (Y/N): ")
     if human_first == "Y" or human_first == "N" or human_first == "y" or human_first == "n":
-        return human_first
+        return human_first.upper()
     else:
         print("Please enter Y or N.")
         return player_first_input()
 
 
 if __name__ == "__main__":
-    human_first = player_first_input()
-    table_dimension = table_dimension_input()
+    human_first = 'Y'# player_first_input()
+    table_dimension = 8 # table_dimension_input()
     byte_game = game.Game(human_first, table_dimension)
     byte_game.play_game()
