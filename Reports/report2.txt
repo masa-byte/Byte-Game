@@ -1,0 +1,45 @@
+directions.py:
+    Enum za moguce smerove kretanja.
+
+game.py:
+    get_computer_valid_and_allowed_move(self, color)
+        Za sad vraca sve moguce poteze koje moze racunar da odigra
+    get_valid_and_allowed_move(self, color)
+        Odredjuje da li igra covek ili racunar
+    get_next_color(self)
+        Naizmenicno menja belog i crnog igraca
+    play_game
+        Odigravaju se potezi i proglasava pobednik
+
+stack.py:
+    pop(self, position)
+        Skida novcice sa stacka od position pa do vrha
+    get_number_of_coins(self)
+        Vraca broj novica koji su trenutno na stacku
+    get_number_of_coins_from_position(self, position)
+        Broj novicica na steku - position
+    get_coins_from_position(self, pos)
+        Vraca novcice od pos do vrha
+
+table.py:
+    add_directions_in_result_if_exists(self, i, j, result, valid_moves)
+        Proverava da li postoji polje na (i, j) i ako nije prazno u skup rezultat dodaje smerove valid_moves
+    check_diagonals(self, i, j, m, result)
+        Proverava da li na cisto dijagonalnim poljima daljine m od trenutnog ima stekova, ako ima dodaje u result moguce pravce
+    check_middles(self, i, j, m, n, result)
+        Proverava da li na ostalim poljima daljine m od trenutnog ima stekova, ako ima dodaje u result moguce pravce
+    find_allowed_directions(self, i, j)
+        Pronalazi moguce pravce kako bi se stek kretao ka najblizem steku
+    get_destination_stack(self, i, j, direction)
+        Na osnovu pozicije (i, j) vraca iz table stek koji je u direction pravcu
+    is_moving_part_of_stack_allowed(self, i, j, move)
+        Proverava da li se deo steka moze prebaciti na neki drugi stek
+    is_move_allowed
+        Proverava da li je dozvoljen potez
+    play_move(self, move)
+        Odigrava potez, ako je dozvoljen
+    get_all_allowed_moves(self, color)
+        Vraca sve dozvoljene poteze
+
+test.py:
+    Sluzi nama za interno testiranje.
