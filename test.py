@@ -71,5 +71,8 @@ if __name__ == "__main__":
     matrix[3][5] = 1
     matrix[5][5] = 1
     
-    result = find_nearest_stacks(3, 3)
-    print(result)
+    #result = find_nearest_stacks(3, 3)
+    tuples = [(1, 5), (3, 5), (5, 5)]
+    for first, second in tuples:
+        print(first)
+        print(second)

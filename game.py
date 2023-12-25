@@ -3,15 +3,18 @@ import move
 from math import floor
 from copy import deepcopy
 import random
+import sys
 
 class Game:
     def __init__(self, human_first, table_dimension):
         self.human_first = True if human_first == "Y" else False
         self.table_dimension = table_dimension
-        self.number_of_stacks = int((self.table_dimension - 2) * self.table_dimension / 2) / 8
+        self.number_of_stacks = (
+            int((self.table_dimension - 2) * self.table_dimension / 2) / 8
+        )
         self.game_table = table.Table(table_dimension)
         self.game_table.print_table()
-        print('////////////////////////////////////////////////////////')
+        print("////////////////////////////////////////////////////////")
 
         self.player_color = 0
 
@@ -35,24 +38,27 @@ class Game:
                 c += 1
 
                 if i.isnumeric() and j.isnumeric():
-                    player_move = move.Move(int(i), int(j), int(coin_position_in_stack), direction, color)
+                    player_move = move.Move(
+                        int(i), int(j), int(coin_position_in_stack), direction, color
+                    )
                     if self.game_table.is_move_valid(player_move):
                         if self.game_table.is_move_allowed(player_move):
                             return player_move
                         else:
                             print("Move not allowed")
-                    else: 
+                    else:
                         print("Move not valid")
 
     def get_computer_valid_and_allowed_move(self, color):
         # TO DO: U 3. fazi izmeniti da se uzima najbolji potez
-        best_move = self.minimax(1, True, color, None)
+        #best_move = self.minimax(1, True, color, None)
+        best_move = self.minimax_alpha_beta(1, True, color, None)
         return best_move[2]
 
     def get_valid_and_allowed_move(self, color):
-        if self.human_first and color == 'W':
+        if self.human_first and color == "W":
             return self.get_human_valid_and_allowed_move(color)
-        elif not self.human_first and color == 'B':
+        elif not self.human_first and color == "B":
             return self.get_human_valid_and_allowed_move(color)
         else:
             return self.get_computer_valid_and_allowed_move(color)
@@ -67,7 +73,7 @@ class Game:
         return False
 
     def get_next_color(self):
-        color = 'W' if self.player_color == 0 else 'B'
+        color = "W" if self.player_color == 0 else "B"
         self.player_color += 1
         self.player_color %= 2
         return color
@@ -77,41 +83,93 @@ class Game:
             color = self.get_next_color()
             move = self.get_valid_and_allowed_move(color)
             result = self.game_table.play_move(move)
-            if result != None:
-                if result == 'B':
+            if result is not None:
+                if result == "B":
                     self.black_stacks += 1
                     if self.is_game_over():
                         print("Black wins")
                         break
-                elif result == 'W':
+                elif result == "W":
                     self.white_stacks += 1
                     if self.is_game_over():
                         print("White wins")
                         break
             self.game_table.print_table()
-            print('////////////////////////////////////////////////////////')
+            print("////////////////////////////////////////////////////////")
 
     def evaluate_state(self):
         return random.uniform(-1, 1)
 
     def max_state(self, lsv):
         return max(lsv, key=lambda x: x[1])
-    
+
     def min_state(self, lsv):
         return min(lsv, key=lambda x: x[1])
-    
+
     def minimax(self, depth, my_move, color, move):
         list_of_moves = self.game_table.get_all_allowed_moves(color)
+        if depth == 0 or list_of_moves is None:
+            return (self, self.evaluate_state(), move)
         list_of_games_and_moves = []
         for possible_move in list_of_moves:
             game = deepcopy(self)
             game.game_table.play_move(possible_move)
             list_of_games_and_moves.append((game, possible_move))
-        if depth == 0 or list_of_moves is None:
-            return(self, self.evaluate_state(), move)
-        lsv = [game_and_move[0].minimax(depth - 1, not my_move, "B" if color == "W" else "W", game_and_move[1]) for game_and_move in list_of_games_and_moves]
+        lsv = [
+            game_and_move[0].minimax(
+                depth - 1, not my_move, "B" if color == "W" else "W", game_and_move[1]
+            )
+            for game_and_move in list_of_games_and_moves
+        ]
         if my_move:
             return self.max_state(lsv)
         else:
             return self.min_state(lsv)
-        
+
+    #########################
+
+    def max_value(self, depth, alpha, beta, color, move):
+        list_of_moves = self.game_table.get_all_allowed_moves(color)
+        if depth == 0 or list_of_moves is None:
+            return (self, self.evaluate_state(), move)
+        list_of_games_and_moves = []
+        for possible_move in list_of_moves:
+            game = deepcopy(self)
+            game.game_table.play_move(possible_move)
+            list_of_games_and_moves.append((game, possible_move))
+
+        for game, game_move in list_of_games_and_moves:
+            alpha = max(
+                alpha,
+                game.min_value(depth - 1, alpha, beta, "B" if color == "W" else "W", game_move),
+                key = lambda x: x[1]
+            )
+            if alpha[1] >= beta[1]:
+                return beta
+        return alpha
+    
+    def min_value(self, depth, alpha, beta, color, move):
+        list_of_moves = self.game_table.get_all_allowed_moves(color)
+        if depth == 0 or list_of_moves is None:
+            return (self, self.evaluate_state(), move)
+        list_of_games_and_moves = []
+        for possible_move in list_of_moves:
+            game = deepcopy(self)
+            game.game_table.play_move(possible_move)
+            list_of_games_and_moves.append((game, possible_move))
+
+        for game, game_move in list_of_games_and_moves:
+            beta = min(
+                beta,
+                game.max_value(depth - 1, alpha, beta, "B" if color == "W" else "W", game_move),
+                key = lambda x: x[1]
+            )
+            if alpha[1] >= beta[1]:
+                return alpha
+        return beta
+    
+    def minimax_alpha_beta(self, depth, my_move, color, move, alpha = (None, - sys.maxsize - 1, None), beta = (None, sys.maxsize, None)):
+        if my_move:
+            return self.max_value(depth, alpha, beta, color, move)
+        else:
+            return self.min_value(depth, alpha, beta, color, move)

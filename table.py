@@ -43,7 +43,7 @@ class Table:
                 row = ""
                 for matrix in matrix_row:
                     row += "".join(matrix[k]) + " "
-                print(row)
+                print(str(i) + " " + row)
             print()
 
     def is_move_valid(self, move):
@@ -127,6 +127,8 @@ class Table:
         num_of_coins_to_move = source_stack.get_number_of_coins_from_position(move.coin_position_in_stack)
 
         if height_of_destination_stack + num_of_coins_to_move <= destination_stack.capacity:
+            if height_of_destination_stack == 0:
+                return True
             if height_of_destination_stack + num_of_coins_to_move > height_of_source_stack:
                 return True
         return False
