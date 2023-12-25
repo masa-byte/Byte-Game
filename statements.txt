@@ -1,0 +1,4 @@
+1. Ako se broj stekova kompjutera poveca za 1 -> 1
+2. Ako se broj stekova coveka poveca za 1 -> -1
+3. Ako je na steku bilo x + y + z = 8, pri cemu je x prethodni broj novcica, y broj novcica kompjutera i z broj novcica coveka -> -0.8
+4. 

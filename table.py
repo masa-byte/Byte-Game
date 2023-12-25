@@ -104,20 +104,24 @@ class Table:
         return result
 
     def get_destination_stack(self, i, j, direction):
-        if direction == Direction.TL.value:
-            return self.table[i - 1][j - 1]
-        elif direction == Direction.TR.value:
+        if direction == Direction.TL.value and (i - 1) >= 0 and (j - 1) >= 0:
+            return self.table[i - 1][j - 1] 
+        elif direction == Direction.TR.value and (i - 1) >= 0 and (j + 1) < self.n:
             return self.table[i - 1][j + 1]
-        elif direction == Direction.BL.value:
+        elif direction == Direction.BL.value and (i + 1) < self.n and (j - 1) >= 0:
             return self.table[i + 1][j - 1]
-        elif direction == Direction.BR.value:
+        elif direction == Direction.BR.value and (i + 1) < self.n and (j + 1) < self.n:
             return self.table[i + 1][j + 1]
+        return None
         
     def is_moving_part_of_stack_allowed(self, i, j, move):
         source_stack = self.table[i][j]
         height_of_source_stack = source_stack.get_number_of_coins()
-        
+            
         destination_stack = self.get_destination_stack(i, j, move.direction)
+        if destination_stack is None:
+            return False
+        
         height_of_destination_stack = destination_stack.get_number_of_coins()
     
         num_of_coins_to_move = source_stack.get_number_of_coins_from_position(move.coin_position_in_stack)
@@ -154,7 +158,8 @@ class Table:
                 if is_field_black(i, j)
             ]
         )
-    
+
+
     def play_move(self, move):
         i = move.i
         j = move.j
