@@ -1,55 +1,152 @@
+facts_wights = {
+    1: 1,
+    2: -1,
+    3: -0.5,
+    4: 0.8,
+    5: -0.8,
+    6: -0.05,
+    7: 0.05,
+    8: 0.05,
+    9: -0.05,
+}
+
+
+def evaluate_state(game, color, move):
+    facts = translate_state_to_facts(game, color, move)
+    if facts == 1:
+        return 1
+    elif facts == 2:
+        return -1
+    else:
+        sum_of_weights = sum([fact[1] for fact in facts])
+        return sum_of_weights
+
+
 def translate_state_to_facts(game, color, move):
-    facts = set()
+    facts = []
     if color == "W":
         if game.white_stacks > game.black_stacks:
-            facts.add(1)
+            return 1
         elif game.white_stacks < game.black_stacks:
-            facts.add(2)
+            return 2
     elif color == "B":
         if game.black_stacks > game.white_stacks:
-            facts.add(1)
+            return 1
         elif game.black_stacks < game.white_stacks:
-            facts.add(2)
+            return 2
     if game.white_stacks == game.black_stacks:
-        facts.add(3)
+        facts.append([3, facts_wights[3]])
 
     current_stack, stack_i, stack_j = game.game_table.get_destination_stack(
         move.i, move.j, move.direction
     )
 
-    if current_stack.get_color_of_top_coin() == color:
-        facts.add(4)
+    if not current_stack.is_empty():
+        current_stack_top_coin_color = current_stack.get_color_of_top_coin()
     else:
-        facts.add(5)
-
-    facts.add(6)
+        current_stack_top_coin_color = None
+    number_of_coins_in_curent_stack = current_stack.get_number_of_coins()
 
     vicinity_stacks = game.game_table.get_vicinity_stacks(stack_i, stack_j)
 
-    number_of_coins_in_curent_stack = current_stack.get_number_of_coins()
-    number_of_computer_coins_in_vicinity_stacks = 0
-    number_of_human_coins_in_vicinity_stacks = 0
-
     for stack in vicinity_stacks:
-        if stack.get_color_of_top_coin() == color:
-            facts.add(7)
+        color_on_vicinity_stack_top = stack.get_color_of_top_coin()
+        number_of_vicinity_stack_coins = stack.get_number_of_coins()
+
+        if number_of_coins_in_curent_stack + number_of_vicinity_stack_coins == 8:
+            # vicinity stack on current stack in next round
+            if color_on_vicinity_stack_top == color:
+                facts.append([4, facts_wights[4]])
+            else:
+                facts.append([5, facts_wights[5]])
+            # current stack on vicinity stack in next round
+            if current_stack_top_coin_color == color:
+                facts.append([4, facts_wights[4]])
+            else:
+                facts.append([5, facts_wights[5]])
+        elif number_of_coins_in_curent_stack + number_of_vicinity_stack_coins < 8:
+            # vicinity stack on current stack in next round
+            if color_on_vicinity_stack_top == color:
+                facts.append(
+                    [
+                        6,
+                        facts_wights[6]
+                        * (
+                            number_of_coins_in_curent_stack
+                            + number_of_vicinity_stack_coins
+                        ),
+                    ]
+                )
+            else:
+                facts.append(
+                    [
+                        7,
+                        facts_wights[7]
+                        * (
+                            number_of_coins_in_curent_stack
+                            + number_of_vicinity_stack_coins
+                        ),
+                    ]
+                )
+            # current stack on vicinity stack in next round
+            if current_stack_top_coin_color == color:
+                facts.append(
+                    [
+                        6,
+                        facts_wights[6]
+                        * (
+                            number_of_coins_in_curent_stack
+                            + number_of_vicinity_stack_coins
+                        ),
+                    ]
+                )
+            else:
+                facts.append(
+                    [
+                        7,
+                        facts_wights[7]
+                        * (
+                            number_of_coins_in_curent_stack
+                            + number_of_vicinity_stack_coins
+                        ),
+                    ]
+                )
         else:
-            facts.add(8)
-        number_of_computer_coins_in_vicinity_stacks += stack.get_number_of__color_coins(color)
-        number_of_human_coins_in_vicinity_stacks += stack.get_number_of_color_coins("W" if color == "B" else "B")
-
-    if number_of_coins_in_curent_stack + number_of_computer_coins_in_vicinity_stacks == 8:
-        facts.add(9)
-    elif number_of_coins_in_curent_stack + number_of_computer_coins_in_vicinity_stacks < 8:
-        facts.add(10)
-    else:
-        facts.add(11)
-
-    if number_of_coins_in_curent_stack + number_of_human_coins_in_vicinity_stacks == 8:
-        facts.add(12)
-    elif number_of_coins_in_curent_stack + number_of_human_coins_in_vicinity_stacks < 8:
-        facts.add(13)
-    else:
-        facts.add(14)
+            computer_coins = stack.get_number_of_color_coins(color)
+            human_coins = number_of_vicinity_stack_coins - computer_coins
+            # vicinity stack on current stack in next round
+            if computer_coins > human_coins:
+                facts.append(
+                    [
+                        8,
+                        facts_wights[8]
+                        * (number_of_coins_in_curent_stack + computer_coins),
+                    ]
+                )
+            else:
+                facts.append(
+                    [
+                        9,
+                        facts_wights[9]
+                        * (number_of_coins_in_curent_stack + human_coins),
+                    ]
+                )
+            # current stack on vicinity stack in next round
+            if computer_coins > human_coins:
+                facts.append(
+                    [
+                        8,
+                        facts_wights[8]
+                        * (number_of_coins_in_curent_stack + computer_coins),
+                    ]
+                )
+            else:
+                facts.append(
+                    [
+                        9,
+                        facts_wights[9]
+                        * (number_of_coins_in_curent_stack + human_coins),
+                    ]
+                )
 
     return facts
