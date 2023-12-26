@@ -3,6 +3,7 @@ import numpy as np
 from directions import Direction
 from move import Move
 
+
 def is_row_in_middle(i, n):
     return i != 0 and i != n - 1
 
@@ -103,33 +104,71 @@ class Table:
 
         return result
 
+    def get_vicinity_stacks(self, i, j):
+        result = []
+        # top left
+        if (
+            self.does_field_exist(i - 1, j - 1)
+            and not self.table[i - 1][j - 1].is_empty()
+        ):
+            result.append(self.table[i - 1][j - 1])
+        # top right
+        if (
+            self.does_field_exist(i - 1, j + 1)
+            and not self.table[i - 1][j + 1].is_empty()
+        ):
+            result.append(self.table[i - 1][j + 1])
+        # bottom right
+        if (
+            self.does_field_exist(i + 1, j + 1)
+            and not self.table[i + 1][j + 1].is_empty()
+        ):
+            result.append(self.table[i + 1][j + 1])
+        # bottom left
+        if (
+            self.does_field_exist(i + 1, j - 1)
+            and not self.table[i + 1][j - 1].is_empty()
+        ):
+            result.append(self.table[i + 1][j - 1])
+        return result
+
     def get_destination_stack(self, i, j, direction):
         if direction == Direction.TL.value and (i - 1) >= 0 and (j - 1) >= 0:
-            return self.table[i - 1][j - 1] 
+            return [self.table[i - 1][j - 1], i - 1, j - 1]
         elif direction == Direction.TR.value and (i - 1) >= 0 and (j + 1) < self.n:
-            return self.table[i - 1][j + 1]
+            return [self.table[i - 1][j + 1], i - 1, j + 1]
         elif direction == Direction.BL.value and (i + 1) < self.n and (j - 1) >= 0:
-            return self.table[i + 1][j - 1]
+            return [self.table[i + 1][j - 1], i + 1, j - 1]
         elif direction == Direction.BR.value and (i + 1) < self.n and (j + 1) < self.n:
-            return self.table[i + 1][j + 1]
+            return [self.table[i + 1][j + 1], i + 1, j + 1]
         return None
-        
+
     def is_moving_part_of_stack_allowed(self, i, j, move):
         source_stack = self.table[i][j]
         height_of_source_stack = source_stack.get_number_of_coins()
-            
+
         destination_stack = self.get_destination_stack(i, j, move.direction)
         if destination_stack is None:
             return False
         
-        height_of_destination_stack = destination_stack.get_number_of_coins()
-    
-        num_of_coins_to_move = source_stack.get_number_of_coins_from_position(move.coin_position_in_stack)
+        destination_stack = destination_stack[0]
 
-        if height_of_destination_stack + num_of_coins_to_move <= destination_stack.capacity:
+        height_of_destination_stack = destination_stack.get_number_of_coins()
+
+        num_of_coins_to_move = source_stack.get_number_of_coins_from_position(
+            move.coin_position_in_stack
+        )
+
+        if (
+            height_of_destination_stack + num_of_coins_to_move
+            <= destination_stack.capacity
+        ):
             if height_of_destination_stack == 0:
                 return True
-            if height_of_destination_stack + num_of_coins_to_move > height_of_source_stack:
+            if (
+                height_of_destination_stack + num_of_coins_to_move
+                > height_of_source_stack
+            ):
                 return True
         return False
 
@@ -161,12 +200,12 @@ class Table:
             ]
         )
 
-
     def play_move(self, move):
         i = move.i
         j = move.j
         source_stack = self.table[i][j]
         destination_stack = self.get_destination_stack(i, j, move.direction)
+        destination_stack = destination_stack[0]
         coins_to_move = source_stack.pop(move.coin_position_in_stack)
         destination_stack.push(coins_to_move)
 
@@ -174,16 +213,20 @@ class Table:
             destination_stack.pop(0)
             return coins_to_move[-1]
         return None
-    
+
     def get_all_allowed_moves(self, color):
         result = []
         for i in range(self.n):
             for j in range(self.n):
                 if is_field_black(i, j):
-                    for coin_position_in_stack in range(self.table[i][j].get_number_of_coins()):
-                        if(self.table[i][j].elements[coin_position_in_stack] == color):
-                            for direction in self.find_allowed_directions(i, j):
-                                move = Move(i, j, coin_position_in_stack, direction.value, color)
+                    for coin_position_in_stack in range(
+                        self.table[i][j].get_number_of_coins()
+                    ):
+                        if self.table[i][j].elements[coin_position_in_stack] == color:
+                            for direction in Direction:
+                                move = Move(
+                                    i, j, coin_position_in_stack, direction.value, color
+                                )
                                 if self.is_move_allowed(move):
                                     result.append(move)
         return result

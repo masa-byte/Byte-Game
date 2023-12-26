@@ -55,9 +55,15 @@ class BlackField:
     
     def get_number_of_coins(self):
         return len(self.elements)
+    
+    def get_number_of_color_coins(self, color):
+        return len(list(filter(lambda el: el == color, self.elements)))
 
     def get_number_of_coins_from_position(self, position):
         return len(self.elements) - position
 
     def get_coins_from_position(self, pos):
         return self.elements[pos:]
+    
+    def get_color_of_top_coin(self):
+        return self.elements[-1]

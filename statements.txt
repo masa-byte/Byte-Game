@@ -1,4 +1,15 @@
-1. Ako se broj stekova kompjutera poveca za 1 -> 1
-2. Ako se broj stekova coveka poveca za 1 -> -1
-3. Ako je na steku bilo x + y + z = 8, pri cemu je x prethodni broj novcica, y broj novcica kompjutera i z broj novcica coveka -> -0.8
-4. 
+1. If the number of computer stacks increases -> 1
+2. If the number of human stacks increases -> -1
+3. The number of stacks is equal -> -0.5
+4. Current stack has computer coin on top -> 0.2
+5. Current stack has human coin on top -> 0.7
+6. Number of coins on current stack is x -> 0.1 * x
+7. Vicinity stack has computer coin on top -> 0.5
+8. Vicinity stack has human coin on top -> -0.3
+
+9. If there are x coins on stack, and in the vicinity there are y computer coins so that x + y = 8 -> 0.8
+10. If there are x coins on stack, and in the vicinity there are y computer coins so that x + y < 8 -> 0.4
+11. If there are x coins on stack, and in the vicinity there are y computer coins so that x + y > 8 -> 0.6
+12. If there are x coins on stack, and in the vicinity there are y human coins so that x + y = 8 -> -0.8
+13. If there are x coins on stack, and in the vicinity there are y human coins so that x + y < 8 -> -0.4
+14. If there are x coins on stack, and in the vicinity there are y human coins so that x + y > 8 -> -0.6
