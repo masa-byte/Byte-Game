@@ -163,7 +163,7 @@ class Table:
             height_of_destination_stack + num_of_coins_to_move
             <= destination_stack.capacity
         ):
-            if height_of_destination_stack == 0:
+            if height_of_destination_stack == 0 and num_of_coins_to_move == height_of_source_stack:
                 return True
             if (
                 height_of_destination_stack + num_of_coins_to_move

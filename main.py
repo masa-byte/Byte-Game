@@ -22,7 +22,7 @@ def player_first_input():
 
 
 if __name__ == "__main__":
-    human_first = 'Y'# player_first_input()
+    human_first = 'N'# player_first_input()
     table_dimension = 8 # table_dimension_input()
     byte_game = game.Game(human_first, table_dimension)
     byte_game.play_game()

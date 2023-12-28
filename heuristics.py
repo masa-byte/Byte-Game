@@ -1,7 +1,5 @@
+
 facts_wights = {
-    1: 1,
-    2: -1,
-    3: -0.5,
     4: 0.8,
     5: -0.8,
     6: -0.05,
@@ -13,30 +11,13 @@ facts_wights = {
 
 def evaluate_state(game, color, move):
     facts = translate_state_to_facts(game, color, move)
-    if facts == 1:
-        return 1
-    elif facts == 2:
-        return -1
-    else:
-        sum_of_weights = sum([fact[1] for fact in facts])
-        return sum_of_weights
+    sum_of_weights = sum([fact[1] for fact in facts])
+    return sum_of_weights
 
 
 def translate_state_to_facts(game, color, move):
     facts = []
-    if color == "W":
-        if game.white_stacks > game.black_stacks:
-            return 1
-        elif game.white_stacks < game.black_stacks:
-            return 2
-    elif color == "B":
-        if game.black_stacks > game.white_stacks:
-            return 1
-        elif game.black_stacks < game.white_stacks:
-            return 2
-    if game.white_stacks == game.black_stacks:
-        facts.append([3, facts_wights[3]])
-
+    
     current_stack, stack_i, stack_j = game.game_table.get_destination_stack(
         move.i, move.j, move.direction
     )

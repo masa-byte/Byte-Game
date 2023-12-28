@@ -5,6 +5,8 @@ from copy import deepcopy
 import heuristics as h
 import sys
 
+search_depth = 3
+
 
 class Game:
     def __init__(self, human_first, table_dimension):
@@ -53,7 +55,8 @@ class Game:
                         print("Move not valid")
 
     def get_computer_valid_and_allowed_move(self, color):
-        best_move = self.minimax_alpha_beta(2, True, color)
+        best_move = self.minimax_alpha_beta(search_depth, True, color)
+        print(best_move[0].last_move)
         return best_move[0].last_move
 
     def get_valid_and_allowed_move(self, color):
@@ -82,22 +85,26 @@ class Game:
     def play_game(self):
         while True:
             color = self.get_next_color()
-            move = self.get_valid_and_allowed_move(color)
-            result = self.game_table.play_move(move)
-            self.last_move = move
-            if result is not None:
-                if result == "B":
-                    self.black_stacks += 1
-                    print("Black got a stack")
-                    if self.is_game_over():
-                        print("Black wins")
-                        break
-                elif result == "W":
-                    self.white_stacks += 1
-                    print("White got a stack")
-                    if self.is_game_over():
-                        print("White wins")
-                        break
+            possible_moves = self.game_table.get_all_allowed_moves(color)
+            if len(possible_moves) != 0:
+                move = self.get_valid_and_allowed_move(color)
+                result = self.game_table.play_move(move)
+                self.last_move = move
+                if result is not None:
+                    if result == "B":
+                        self.black_stacks += 1
+                        print("Black got a stack")
+                        if self.is_game_over():
+                            print("Black wins")
+                            break
+                    elif result == "W":
+                        self.white_stacks += 1
+                        print("White got a stack")
+                        if self.is_game_over():
+                            print("White wins")
+                            break
+            else:
+                print("No moves for " + color)
             self.game_table.print_table()
             print("////////////////////////////////////////////////////////")
 
@@ -106,58 +113,94 @@ class Game:
     def evaluate_state(self, color, move):
         return h.evaluate_state(self, color, move)
 
-    def max_value(self, depth, alpha, beta, color):
+    def max_value(self, depth, alpha, beta, color, last_move):
         list_of_moves = self.game_table.get_all_allowed_moves(color)
-        if depth == 0 or list_of_moves is None:
+        if depth == 0 or len(list_of_moves) == 0 or list_of_moves is None:
             return (self, self.evaluate_state(color, self.last_move))
         list_of_games = []
         for possible_move in list_of_moves:
             game = deepcopy(self)
-            result = game.game_table.play_move(possible_move)
-            game.last_move = possible_move
-            if result is not None:
-                if result == "B":
-                    game.black_stacks += 1
-                elif result == "W":
-                    game.white_stacks += 1
+            game.game_table.play_move(possible_move)
+            game.last_move = last_move
             list_of_games.append(game)
 
         for game in list_of_games:
             alpha = max(
                 alpha,
-                game.min_value(depth - 1, alpha, beta, "W" if color == "B" else "B"),
+                game.min_value(
+                    depth - 1, alpha, beta, "W" if color == "B" else "B", last_move
+                ),
                 key=lambda x: x[1],
             )
-            alpha[0].last_move = game.last_move
             if alpha[1] >= beta[1]:
                 return beta
         return alpha
 
-    def min_value(self, depth, alpha, beta, color):
+    def min_value(self, depth, alpha, beta, color, last_move):
         list_of_moves = self.game_table.get_all_allowed_moves(color)
-        if depth == 0 or list_of_moves is None:
+        if depth == 0 or len(list_of_moves) == 0 or list_of_moves is None:
             return (self, self.evaluate_state(color, self.last_move))
         list_of_games = []
         for possible_move in list_of_moves:
             game = deepcopy(self)
-            result = game.game_table.play_move(possible_move)
-            game.last_move = possible_move
-            if result is not None:
-                if result == "B":
-                    game.black_stacks += 1
-                elif result == "W":
-                    game.white_stacks += 1
+            game.game_table.play_move(possible_move)
+            game.last_move = last_move
             list_of_games.append(game)
 
         for game in list_of_games:
             beta = min(
                 beta,
                 game.max_value(
-                    depth - 1, alpha, beta, "W" if color == "B" else "B"
+                    depth - 1, alpha, beta, "W" if color == "B" else "B", last_move
                 ),
                 key=lambda x: x[1],
             )
-            beta[0].last_move = game.last_move
+            if alpha[1] >= beta[1]:
+                return alpha
+        return beta
+
+    def initial_max_value(self, depth, alpha, beta, color):
+        list_of_moves = self.game_table.get_all_allowed_moves(color)
+        if len(list_of_moves) == 0 or list_of_moves is None:
+            return "empty"
+        list_of_games = []
+        for possible_move in list_of_moves:
+            game = deepcopy(self)
+            game.game_table.play_move(possible_move)
+            game.last_move = possible_move
+            list_of_games.append(game)
+
+        for game in list_of_games:
+            alpha = max(
+                alpha,
+                game.min_value(
+                    depth - 1, alpha, beta, "W" if color == "B" else "B", game.last_move
+                ),
+                key=lambda x: x[1],
+            )
+            if alpha[1] >= beta[1]:
+                return beta
+        return alpha
+
+    def initial_min_value(self, depth, alpha, beta, color):
+        list_of_moves = self.game_table.get_all_allowed_moves(color)
+        if list_of_moves is None:
+            return "empty"
+        list_of_games = []
+        for possible_move in list_of_moves:
+            game = deepcopy(self)
+            game.game_table.play_move(possible_move)
+            game.last_move = possible_move
+            list_of_games.append(game)
+
+        for game in list_of_games:
+            beta = min(
+                beta,
+                game.max_value(
+                    depth - 1, alpha, beta, "W" if color == "B" else "B", game.last_move
+                ),
+                key=lambda x: x[1],
+            )
             if alpha[1] >= beta[1]:
                 return alpha
         return beta
@@ -171,6 +214,6 @@ class Game:
         beta=(None, sys.maxsize),
     ):
         if my_move:
-            return self.max_value(depth, alpha, beta, color)
+            return self.initial_max_value(depth, alpha, beta, color)
         else:
-            return self.min_value(depth, alpha, beta, color)
+            return self.initial_min_value(depth, alpha, beta, color)
