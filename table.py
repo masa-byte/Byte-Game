@@ -93,7 +93,7 @@ class Table:
     def find_allowed_directions(self, i, j):
         result = set()
 
-        for m in range(1, 8):
+        for m in range(1, self.n):
             self.check_diagonals(i, j, m, result)
 
             for n in range(2, 2 * m - 1, 2):
